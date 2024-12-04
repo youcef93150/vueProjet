@@ -3,7 +3,9 @@
     <nav>
       <router-link to="/">Connexion</router-link> |
       <router-link to="/register">Inscription</router-link> | 
-      <router-link to="/calendrier">Calendrier</router-link>
+      <router-link to="/calendrier">Calendrier</router-link> | 
+      <router-link to="/meteo">Météo</router-link>
+
     </nav>
     <router-view /> <!-- Affiche le composant en fonction de la route -->
   </div>
