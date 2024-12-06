@@ -1,10 +1,12 @@
 <template>
-    <header> <h1>S'inscrire</h1></header>
+    <header>
+        <h1>S'inscrire</h1>
+    </header>
 
     <div>
         <form @submit.prevent="handleSubmit">
             <div>
-                <label for="username">Nom : </label>
+                <label for="nom">Nom : </label>
                 <input
                     id="nom"
                     v-model="nom"
@@ -14,7 +16,7 @@
                 />
             </div>
             <div>
-                <label for="username">Prénom : </label>
+                <label for="prenom">Prénom : </label>
                 <input
                     id="prenom"
                     v-model="prenom"
@@ -36,10 +38,10 @@
             </div>
 
             <div>
-                <label for="mdp">Mot de passe : </label>
+                <label for="password">Mot de passe : </label>
                 <input
-                    id="mdp"
-                    v-model="mdp"
+                    id="password"
+                    v-model="password"
                     type="password"
                     placeholder="Entrez votre mot de passe"
                     required
@@ -52,30 +54,59 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: 'Register',
+  name: "Register",
   data() {
     return {
-      nom: '',
-      prenom: '',
-      email: '',
-      mdp: ''
+      nom: "",
+      prenom: "",
+      email: "",
+      password: "",
     };
   },
   methods: {
-    handleSubmit() {
-      alert(`Nom: ${this.nom}\nPrénom: ${this.prenom}\nEmail: ${this.email}\nMot de passe: ${this.mdp}`);
-      // Réinitialiser le formulaire après soumission
-      this.nom = '';
-      this.prenom = '';
-      this.email = '';
-      this.mdp = ''; // correction de 'password' en 'mdp'
-    }
-  }
+    async handleSubmit() {
+      // Validation côté client
+      if (!this.nom || !this.prenom || !this.email || !this.password) {
+        alert("Tous les champs doivent être remplis !");
+        return;
+      }
+
+      try {
+        // Appel API
+        const response = await axios.post("http://localhost:3306/api/register", {
+          nom: this.nom,
+          prenom: this.prenom,
+          email: this.email,
+          password: this.password,
+        });
+
+        // Message de succès
+        alert(response.data.success || "Utilisateur inscrit avec succès !");
+        
+        // Réinitialiser le formulaire
+        this.nom = "";
+        this.prenom = "";
+        this.email = "";
+        this.password = "";
+      } catch (error) {
+        // Gestion des erreurs
+        console.error("Erreur lors de l'inscription :", error);
+        if (error.response) {
+          alert(error.response.data.error || "Une erreur s'est produite, veuillez réessayer.");
+        } else {
+          alert("Impossible de contacter le serveur.");
+        }
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
+/* Style inchangé */
 header {
     text-align: center;
     margin-bottom: 20px;
